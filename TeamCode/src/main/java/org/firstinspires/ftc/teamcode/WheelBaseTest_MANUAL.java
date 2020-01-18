@@ -36,10 +36,10 @@ public class WheelBaseTest_MANUAL extends OpMode {
         catcherL = hardwareMap.get(DcMotor.class, "catcherL");
         catcherR = hardwareMap.get(DcMotor.class, "catcherR");
 
-        LF.setDirection(DcMotor.Direction.FORWARD);
-        LB.setDirection(DcMotor.Direction.FORWARD);
-        RF.setDirection(DcMotor.Direction.REVERSE);
-        RB.setDirection(DcMotor.Direction.REVERSE);
+        LF.setDirection(DcMotor.Direction.REVERSE);
+        LB.setDirection(DcMotor.Direction.REVERSE);
+        RF.setDirection(DcMotor.Direction.FORWARD);
+        RB.setDirection(DcMotor.Direction.FORWARD);
 
         catcherL.setDirection(DcMotor.Direction.REVERSE);
         catcherR.setDirection(DcMotor.Direction.FORWARD);
