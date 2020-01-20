@@ -49,30 +49,16 @@ public class WheelBaseTest_MANUAL extends OpMode {
         rider = hardwareMap.get(DcMotor.class, "rider");
 
 
-        LF.setDirection(DcMotor.Direction.FORWARD);
-        LB.setDirection(DcMotor.Direction.FORWARD);
-        RF.setDirection(DcMotor.Direction.REVERSE);
-        RB.setDirection(DcMotor.Direction.REVERSE);
-//        LF.setDirection(DcMotor.Direction.REVERSE);
-//        LB.setDirection(DcMotor.Direction.REVERSE);
-//        RF.setDirection(DcMotor.Direction.FORWARD);
-//        RB.setDirection(DcMotor.Direction.FORWARD);
+//        LF.setDirection(DcMotor.Direction.FORWARD);
+//        LB.setDirection(DcMotor.Direction.FORWARD);
+//        RF.setDirection(DcMotor.Direction.REVERSE);
+//        RB.setDirection(DcMotor.Direction.REVERSE);
+        LF.setDirection(DcMotor.Direction.REVERSE);
+        LB.setDirection(DcMotor.Direction.REVERSE);
+        RF.setDirection(DcMotor.Direction.FORWARD);
+        RB.setDirection(DcMotor.Direction.FORWARD);
 
         rider.setDirection(DcMotor.Direction.FORWARD);
-
-        LF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        rider.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        rider.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         LF.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -125,6 +111,9 @@ public class WheelBaseTest_MANUAL extends OpMode {
         LBPower = Range.clip(LBPower, -max_power, max_power);
         RBPower = Range.clip(RBPower, -max_power, max_power);
 
+        if(gamepad1.b) {
+            LFPower = 0.5;
+        }
 
 
         LF.setPower(LFPower);
