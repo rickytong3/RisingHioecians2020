@@ -10,16 +10,21 @@ import com.qualcomm.robotcore.util.Range;
 
 
 /* TODO
-*   *1. Rider(DCMotor) -- analog, constant power with two opposite direction (gamepad1.dpad_up and gamepad1.dpad_down)
-*
-*    3. arm (servo) -- analog, (gamepad1.x and y)
-*
-*
-*  Hint: use boolean button for analog (small change per pressed dt)
-*/
+ *   *1. Rider(DCMotor) -- analog, constant power with two opposite direction (gamepad1.dpad_up and gamepad1.dpad_down)
+ *
+ *    3. arm (servo) -- analog, (gamepad1.x and y)
+ *
+ *
+ *  Hint: use boolean button for analog (small change per pressed dt)
+ */
 
+/* TODO
+ *   control the wheels using pad
+ *   (servo)catcher position gamepad1.y
+ *   rider = left_trigger-right_trigger
+ */
 
-@TeleOp(name="Wheel Base test", group="Iterative Opmode")
+@TeleOp(name = "Wheel Base test", group = "Iterative Opmode")
 
 public class WheelBaseTest_MANUAL extends OpMode {
     // Declare OpMode members.
@@ -29,11 +34,16 @@ public class WheelBaseTest_MANUAL extends OpMode {
 
     private DcMotor rider = null;
 
-//    private Servo catcher = null;
+    private boolean up = true;
+
+    boolean changed = false, on = false;
+
+
+    private Servo catcher = null;
 
     private double catcherPos = 0.5;
 
-    private final double max_power = 0.5;
+    private final double max_power = 0.7;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -69,9 +79,9 @@ public class WheelBaseTest_MANUAL extends OpMode {
         rider.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-//        catcher = hardwareMap.get(Servo.class, "catcher");
+        catcher = hardwareMap.get(Servo.class, "catcher");
 
-//        catcher.setPosition(0);
+        catcher.setPosition(catcherPos);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -103,7 +113,7 @@ public class WheelBaseTest_MANUAL extends OpMode {
         double RFPower = gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x;
         double RBPower = gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x;
 
-        double riderPower = gamepad1.left_trigger - gamepad1.right_trigger;
+        double riderPower = 0;
 
 
         LFPower = Range.clip(LFPower, -max_power, max_power);
@@ -111,9 +121,9 @@ public class WheelBaseTest_MANUAL extends OpMode {
         LBPower = Range.clip(LBPower, -max_power, max_power);
         RBPower = Range.clip(RBPower, -max_power, max_power);
 
-        if(gamepad1.b) {
-            LFPower = 0.5;
-        }
+//        if(gamepad1.b) {
+//            LFPower = 0.5;
+//        }
 
 
         LF.setPower(LFPower);
@@ -121,25 +131,50 @@ public class WheelBaseTest_MANUAL extends OpMode {
         LB.setPower(LBPower);
         RB.setPower(RBPower);
 
+        float LTRT = gamepad1.left_trigger - gamepad1.right_trigger;
+        if (LTRT > 0) {
+            riderPower += 1.0;
+        } else if (LTRT < 0) {
+            riderPower -= 1.0;
+        } else {
+            riderPower = 0;
+        }
+
+        riderPower = Range.clip(riderPower, -1.0, 1.0);
+
         rider.setPower(riderPower);
 
-        if(gamepad1.y) {
-            catcherPos += 0.05;
-        } else if(gamepad1.a) {
-            catcherPos -= 0.05;
+
+        if (up) {
+            if (gamepad1.x) {
+
+                catcherPos = 0;
+                catcher.setPosition(catcherPos);
+                if (catcher.getPosition() == 0) {
+                    up = false;
+                }
+            }
+        } else {
+            if (gamepad1.y) {
+                catcherPos = 0.65;
+                catcher.setPosition(catcherPos);
+                if (catcher.getPosition() == 0.65) {
+                    up = true;
+                }
+            }
         }
 
 
-        catcherPos = Range.clip(catcherPos, 0.0, 1.0);
+        //catcherPos = Range.clip(catcherPos, 0.0, 1.0);
 
 
-//        catcher.setPosition(catcherPos);
+        //catcher.setPosition(catcherPos);
 
 
-        telemetry.addData("Catcher Pos: ", catcherPos);
+        telemetry.addData("Catcher Pos: ", catcher.getPosition());
         telemetry.addData("Gamepad: y", gamepad1.left_stick_y);
         telemetry.addData("Gamepad: X", gamepad1.left_stick_x);
-
+        telemetry.addData("rider power:", riderPower);
         telemetry.addData("Leftpower", LFPower);
         telemetry.update();
     }
